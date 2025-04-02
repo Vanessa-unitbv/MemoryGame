@@ -1,22 +1,26 @@
 ﻿using MemoryGame.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace MemoryGame.Views
 {
+    /// <summary>
+    /// Interaction logic for LoginView.xaml
+    /// </summary>
     public partial class LoginView : Window
     {
+        private LoginViewModel _viewModel;
+
         public LoginView()
         {
             InitializeComponent();
 
-            var viewModel = (LoginViewModel)Resources["LoginViewModel"];
-            viewModel.ShowNewUserDialogRequested += (s, e) => ShowNewUserDialog();
-            viewModel.CloseNewUserDialogRequested += (s, e) => HideNewUserDialog();
+            // Obținem view model-ul din resurse
+            _viewModel = (LoginViewModel)Resources["LoginViewModel"];
+
+            // Înregistrăm evenimentele pentru a gestiona dialogul de creare utilizator
+            _viewModel.ShowNewUserDialogRequested += (s, e) => ShowNewUserDialog();
+            _viewModel.CloseNewUserDialogRequested += (s, e) => HideNewUserDialog();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -24,13 +28,17 @@ namespace MemoryGame.Views
             this.Close();
         }
 
-        // Metode pentru a afișa/ascunde dialogul de creare utilizator
-        // Acestea vor fi apelate din ViewModel
+        /// <summary>
+        /// Afișează dialogul de creare utilizator
+        /// </summary>
         public void ShowNewUserDialog()
         {
             NewUserDialog.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Ascunde dialogul de creare utilizator
+        /// </summary>
         public void HideNewUserDialog()
         {
             NewUserDialog.Visibility = Visibility.Collapsed;

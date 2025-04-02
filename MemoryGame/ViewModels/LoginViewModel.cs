@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoryGame.Commands;
-using MemoryGame.Models;
-using MemoryGame.Services;
-using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.IO;
+using MemoryGame.Commands;
+using MemoryGame.Models;
+using MemoryGame.Services;
 using MemoryGame.Views;
+using System.ComponentModel;
 
 namespace MemoryGame.ViewModels
 {
+    /// <summary>
+    /// ViewModel pentru fereastra de autentificare
+    /// </summary>
     public class LoginViewModel : INotifyPropertyChanged
     {
         private readonly UserService _userService;
@@ -36,7 +35,7 @@ namespace MemoryGame.ViewModels
             set
             {
                 _selectedUser = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedUser));
                 OnPropertyChanged(nameof(IsUserSelected));
             }
         }
@@ -47,7 +46,7 @@ namespace MemoryGame.ViewModels
             set
             {
                 _newUsername = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(NewUsername));
                 OnPropertyChanged(nameof(CanCreateUser));
             }
         }
@@ -58,7 +57,7 @@ namespace MemoryGame.ViewModels
             set
             {
                 _selectedImagePath = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedImagePath));
                 OnPropertyChanged(nameof(CanCreateUser));
             }
         }
@@ -74,6 +73,7 @@ namespace MemoryGame.ViewModels
         public ICommand CancelCommand { get; }
         public ICommand NextAvatarCommand { get; }
         public ICommand PreviousAvatarCommand { get; }
+
         public LoginViewModel()
         {
             _userService = new UserService();
@@ -110,12 +110,8 @@ namespace MemoryGame.ViewModels
 
         private List<string> LoadAvailableAvatars()
         {
-            // Aici vom încărca lista de avatare disponibile
-            // Pentru exemplu, vom folosi câteva căi hard-codate
-            // Într-o implementare reală, ai putea scana un director cu avatare
-
+            // Aici vom încărca lista de avatare disponibile din directorul Resurses
             string avatarsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resurses");
-
 
             // Dacă directorul nu există, îl creăm
             if (!Directory.Exists(avatarsDir))
@@ -127,20 +123,20 @@ namespace MemoryGame.ViewModels
                                   .Concat(Directory.GetFiles(avatarsDir, "*.gif"))
                                   .ToArray();
 
-            // Dacă nu găsim imagini, folosim câteva căi implicite pentru exemplu
+            // Dacă nu găsim imagini, folosim căi implicite pentru exemplu
             if (avatarFiles.Length == 0)
             {
                 return new List<string>
-            {
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar1.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar2.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar3.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar4.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar5.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar6.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar7.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar8.png"
-            };
+                {
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar1.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar2.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar3.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar4.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar5.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar6.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar7.png",
+                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar8.png"
+                };
             }
             return avatarFiles.ToList();
         }
@@ -152,7 +148,6 @@ namespace MemoryGame.ViewModels
             _currentAvatarIndex = (_currentAvatarIndex + 1) % _availableAvatars.Count;
             SelectedImagePath = _availableAvatars[_currentAvatarIndex];
         }
-
 
         private void SelectPreviousAvatar()
         {
@@ -256,7 +251,7 @@ namespace MemoryGame.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

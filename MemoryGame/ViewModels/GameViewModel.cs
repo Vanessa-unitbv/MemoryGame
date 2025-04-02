@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System.IO;
 using MemoryGame.Commands;
 using MemoryGame.Models;
+using MemoryGame.Services;
 using MemoryGame.Views;
 
 namespace MemoryGame.ViewModels
@@ -249,7 +250,7 @@ namespace MemoryGame.ViewModels
         public GameViewModel()
         {
             // Inițializarea comenzilor
-            NewGameCommand = new RelayCommand(_ => ResetGameSettings());
+            NewGameCommand = new RelayCommand(_ => StartNewGame());
             OpenGameCommand = new RelayCommand(_ => OpenGame());
             SaveGameCommand = new RelayCommand(_ => SaveGame());
             ExitCommand = new RelayCommand(_ => BackToLogin());
@@ -293,12 +294,24 @@ namespace MemoryGame.ViewModels
 
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    // Aici va fi implementată logica de încărcare a jocului
                     string fileName = openFileDialog.FileName;
-                    MessageBox.Show($"Selected file: {fileName}\nLoading game functionality will be implemented.",
-                                    "Open Game",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
+
+                    // Încărcăm jocul salvat
+                    var gameBoardViewModel = GameBoardViewModel.LoadGame(fileName);
+
+                    if (gameBoardViewModel != null)
+                    {
+                        // Deschidem fereastra jocului
+                        var gameBoardView = new GameBoardView(gameBoardViewModel);
+                        gameBoardView.Show();
+
+                        // Închidem fereastra curentă
+                        if (Application.Current.MainWindow is Window currentWindow)
+                        {
+                            Application.Current.MainWindow = gameBoardView;
+                            currentWindow.Close();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -313,32 +326,10 @@ namespace MemoryGame.ViewModels
         // Metoda pentru a salva jocul curent
         private void SaveGame()
         {
-            try
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Filter = "Memory Game Files (*.mem)|*.mem|All Files (*.*)|*.*",
-                    Title = "Save Game",
-                    DefaultExt = "mem"
-                };
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    // Aici va fi implementată logica de salvare a jocului
-                    string fileName = saveFileDialog.FileName;
-                    MessageBox.Show($"Game will be saved to: {fileName}\nSaving functionality will be implemented.",
-                                    "Save Game",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error saving game: {ex.Message}",
-                                "Error",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
-            }
+            MessageBox.Show("Nu există niciun joc în desfășurare pentru a fi salvat. " +
+                          "Începeți un joc nou înainte de a încerca să salvați.",
+                          "Informație",
+                          MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // Metodă pentru a verifica dacă configurația jocului este validă
@@ -371,18 +362,18 @@ namespace MemoryGame.ViewModels
             return true;
         }
 
-        // Metoda pentru a începe jocul
-        private void StartGame()
+        // Metoda pentru a începe un joc nou
+        private void StartNewGame()
         {
             try
             {
-                // Verificăm din nou validitatea configurației
+                // Verificăm configurația
                 if (!IsConfigurationValid())
                 {
                     MessageBox.Show("Configurația jocului nu este validă. Vă rugăm verificați setările.",
-                                   "Configurație invalidă",
-                                   MessageBoxButton.OK,
-                                   MessageBoxImage.Warning);
+                                  "Configurație invalidă",
+                                  MessageBoxButton.OK,
+                                  MessageBoxImage.Warning);
                     return;
                 }
 
@@ -398,23 +389,33 @@ namespace MemoryGame.ViewModels
                 // Obținem timpul per jucător
                 int timePerPlayer = PlayerTimeSeconds;
 
-                // Aici vom lansa jocul propriu-zis (aceasta va fi implementată ulterior)
-                MessageBox.Show($"Începem jocul pentru {CurrentPlayer.Username}!\n" +
-                              $"Categorie: {selectedCategory}\n" +
-                              $"Dimensiuni: {rows}x{columns}\n" +
-                              $"Timp per jucător: {timePerPlayer} secunde",
-                              "Joc nou");
+                // Creăm view model-ul pentru tabla de joc
+                var gameBoardViewModel = new GameBoardViewModel(CurrentPlayer, selectedCategory, rows, columns, timePerPlayer);
 
-                // Aici se va implementa lansarea jocului propriu-zis
-                // (Se va înlocui MessageBox-ul de mai sus cu codul pentru a deschide fereastra jocului)
+                // Deschidem fereastra jocului
+                var gameBoardView = new GameBoardView(gameBoardViewModel);
+                gameBoardView.Show();
+
+                // Închidem fereastra curentă
+                if (Application.Current.MainWindow is Window currentWindow)
+                {
+                    Application.Current.MainWindow = gameBoardView;
+                    currentWindow.Close();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Eroare la începerea jocului: {ex.Message}",
-                               "Eroare",
-                               MessageBoxButton.OK,
-                               MessageBoxImage.Error);
+                              "Eroare",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
             }
+        }
+
+        // Metoda pentru a începe jocul cu configurația selectată
+        private void StartGame()
+        {
+            StartNewGame();
         }
 
         // Metoda pentru a reveni la ecranul de login
