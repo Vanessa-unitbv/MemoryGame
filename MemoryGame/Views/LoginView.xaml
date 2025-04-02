@@ -7,150 +7,184 @@
         mc:Ignorable="d"
         Title="Sign In" Height="400" Width="500"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Background="MistyRose">
 
-	<Window.Resources>
-		<vm:LoginViewModel x:Key="LoginViewModel" />
-		<BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-	</Window.Resources>
+    <Window.Resources>
+        <vm:LoginViewModel x:Key="LoginViewModel" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Window.Resources>
 
-	<Grid DataContext="{StaticResource LoginViewModel}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid DataContext="{StaticResource LoginViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<!-- Header -->
-		<TextBlock Text="Welcome! Enjoy this game!"
-                   Grid.Row="0"
-                   HorizontalAlignment="Center"
-                   FontSize="24"
-                   Margin="0,20,0,10"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,15,0,10">
+            <TextBlock Text="Welcome to Memory Game!" 
+               FontSize="28" 
+               FontWeight="Bold"
+               TextAlignment="Center"
+               Foreground="IndianRed">
+                <TextBlock.Effect>
+                    <DropShadowEffect ShadowDepth="2" Color="#CCCCCC" Opacity="0.8" BlurRadius="3"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="Challenge Your Mind!" 
+               FontSize="18"
+               FontStyle="Italic"
+               TextAlignment="Center"
+               Foreground="IndianRed"
+               Margin="0,5,0,0"/>
+        </StackPanel>
 
-		<!-- Content Area -->
-		<Grid Grid.Row="1" Margin="20">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+        <!-- Content Area -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-			<!-- User List -->
-			<ListBox Grid.Column="0"
+            <!-- User List -->
+            <ListBox Grid.Column="0"
                      ItemsSource="{Binding Users}"
                      SelectedItem="{Binding SelectedUser}"
                      DisplayMemberPath="Username"
                      Height="220"
-                     VerticalAlignment="Top" />
+                     VerticalAlignment="Top"
+                     Background="LavenderBlush"/>
 
 
 
-			<!-- User Image -->
-			<Border Grid.Column="2"
-                    Width="150"
-                    Height="150"
-                    Background="LightGray"
-                    BorderBrush="Gray"
-                    BorderThickness="1">
-				<Image Source="{Binding SelectedUser.ImagePath}"
-                       Stretch="Uniform"
-                       Margin="5"/>
-			</Border>
-		</Grid>
+            <!-- User Image - Border eliminat -->
+            <Image Grid.Column="2"
+                   Source="{Binding SelectedUser.ImagePath}"
+                   Width="150"
+                   Height="150"
+                   Stretch="Uniform"
+                   Margin="5"/>
+        </Grid>
 
-		<!-- Bottom Buttons -->
-		<StackPanel Grid.Row="2"
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Margin="0,0,0,20">
-			<Button Content="New User"
+            <Button Content="New User"
+                    Foreground="IndianRed"
                     Command="{Binding NewUserCommand}"
                     Width="100"
-                    Margin="5" />
-			<Button Content="Delete User"
+                    Margin="5" 
+                    Background="LavenderBlush"/>
+            <Button Content="Delete User"
+                    Foreground="IndianRed"
                     Command="{Binding DeleteUserCommand}"
                     Width="100"
                     Margin="5"
-                    IsEnabled="{Binding IsUserSelected}" />
-			<Button Content="Play"
+                    IsEnabled="{Binding IsUserSelected}" 
+                    Background="LavenderBlush"/>
+            <Button Content="Play"
+                    Foreground="IndianRed"
                     Command="{Binding PlayCommand}"
                     Width="100"
                     Margin="5"
-                    IsEnabled="{Binding IsUserSelected}" />
-			<Button Content="Cancel"
+                    IsEnabled="{Binding IsUserSelected}" 
+                    Background="LavenderBlush"/>
+            <Button Content="Cancel"
+                    Foreground="IndianRed"
                     Width="100"
                     Margin="5"
-                    Click="CloseButton_Click" />
-		</StackPanel>
+                    Click="CloseButton_Click"
+                    Background="LavenderBlush"/>
+        </StackPanel>
 
-		<!-- New User Dialog Popup -->
-		<Grid x:Name="NewUserDialog"
-			  Grid.RowSpan="3"
-			  Background="#80000000"
-			  Visibility="Collapsed">
-			<Border Background="White"
-					Width="300"
-					Height="350"
-					CornerRadius="5"
-					Padding="20">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="Auto"/>
-					</Grid.RowDefinitions>
+        <!-- New User Dialog Popup -->
+        <Grid x:Name="NewUserDialog"
+              Grid.RowSpan="3"
+              Background="#80000000"
+              Visibility="Collapsed">
+            <Border Background="LavenderBlush"
+                    Width="300"
+                    Height="350"
+                    CornerRadius="5"
+                    Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-					<TextBlock Text="Create New User"
-							   Grid.Row="0"
-							   FontSize="18"
-							   FontWeight="Bold"
-							   Margin="0,0,0,15"/>
+                    <TextBlock Text="Create New User"
+                               Grid.Row="0"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="IndianRed"
+                               Margin="0,0,0,15"/>
 
-					<!-- Username input -->
-					<StackPanel Grid.Row="1" Margin="0,5">
-						<TextBlock Text="Username:" Margin="0,0,0,5"/>
-						<TextBox Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"/>
-					</StackPanel>
+                    <!-- Username input -->
+                    <StackPanel Grid.Row="1" Margin="0,5">
+                        <TextBlock Text="Username:" 
+                                   Foreground="IndianRed"
+                                   FontWeight="Medium"
+                                   Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="White"
+                                 BorderBrush="IndianRed"/>
+                    </StackPanel>
 
-					<!-- User Image selection -->
-					<StackPanel Grid.Row="2" Margin="0,5">
-						<TextBlock Text="User Image:" Margin="0,0,0,5"/>
-						<StackPanel Orientation="Horizontal">
-							<Button Content="&lt;&lt;"
-									Command="{Binding PreviousAvatarCommand}"
-									Width="40"
-									Margin="0,0,5,0" />
-							<Border Width="160"
-									Height="100"
-									BorderBrush="Gray"
-									BorderThickness="1">
-								<Image Source="{Binding SelectedImagePath}"
-									   Stretch="Uniform"
-									   Margin="5"/>
-							</Border>
-							<Button Content="&gt;&gt;"
-									Command="{Binding NextAvatarCommand}"
-									Width="40"
-									Margin="5,0,0,0" />
-						</StackPanel>
-					</StackPanel>
+                    <!-- User Image selection -->
+                    <StackPanel Grid.Row="2" Margin="0,5">
+                        <TextBlock Text="User Image:" 
+                                   Foreground="IndianRed"
+                                   FontWeight="Medium"
+                                   Margin="0,0,0,5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="&lt;&lt;"
+                                    Background="LavenderBlush"
+                                    Foreground="IndianRed"
+                                    BorderBrush="IndianRed"
+                                    Command="{Binding PreviousAvatarCommand}"
+                                    Width="40"
+                                    Margin="0,0,5,0" />
+                            <Image Source="{Binding SelectedImagePath}"
+                                   Width="160" 
+                                   Height="100"
+                                   Stretch="Uniform"/>
+                            <Button Content="&gt;&gt;"
+                                    Foreground="IndianRed"
+                                    Background="LavenderBlush"
+                                    BorderBrush="IndianRed"
+                                    Command="{Binding NextAvatarCommand}"
+                                    Width="40"
+                                    Margin="5,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
 
-					<StackPanel Grid.Row="4"
-								Orientation="Horizontal"
-								HorizontalAlignment="Right">
-						<Button Content="Create"
-								Command="{Binding CreateUserCommand}"
-								Width="80"
-								Margin="0,0,5,0" />
-						<Button Content="Cancel"
-								Command="{Binding CancelCommand}"
-								Width="80" />
-					</StackPanel>
-				</Grid>
-			</Border>
-		</Grid>
-	</Grid>
+                    <StackPanel Grid.Row="4"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Content="Create"
+                                Foreground="IndianRed"
+                                Background="LavenderBlush"
+                                BorderBrush="IndianRed"
+                                Command="{Binding CreateUserCommand}"
+                                Width="80"
+                                Margin="0,0,5,0" />
+                        <Button Content="Cancel"
+                                Foreground="IndianRed"
+                                Background="LavenderBlush"
+                                BorderBrush="IndianRed"
+                                Command="{Binding CancelCommand}"
+                                Width="80" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
 </Window>

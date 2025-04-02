@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.IO;
+using MemoryGame.Views;
 
 namespace MemoryGame.ViewModels
 {
@@ -131,12 +132,14 @@ namespace MemoryGame.ViewModels
             {
                 return new List<string>
             {
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar1.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar2.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar3.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar4.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar5.png",
-            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatar6.png"
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar1.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar2.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar3.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar4.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar5.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar6.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar7.png",
+            "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar8.png"
             };
             }
             return avatarFiles.ToList();
@@ -226,8 +229,29 @@ namespace MemoryGame.ViewModels
 
         private void StartGame()
         {
-            // Aici vom naviga către ecranul jocului (implementat într-o etapă ulterioară)
-            MessageBox.Show($"Începem jocul pentru {SelectedUser.Username}!", "Joc nou");
+            if (SelectedUser == null) return;
+
+            try
+            {
+                // Creăm o nouă instanță a ferestrei de joc și îi pasăm utilizatorul curent
+                var gameView = new GameView(SelectedUser);
+
+                // Afișăm fereastra jocului
+                gameView.Show();
+
+                // Închide fereastra de login
+                if (Application.Current.MainWindow is Window currentWindow)
+                {
+                    // Setăm noua fereastră ca MainWindow
+                    Application.Current.MainWindow = gameView;
+                    currentWindow.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la pornirea jocului: {ex.Message}", "Eroare",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
