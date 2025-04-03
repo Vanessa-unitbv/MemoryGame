@@ -32,10 +32,6 @@ namespace MemoryGame.ViewModels
         private bool _categoryTwo = false;
         private bool _categoryThree = false;
 
-        // Proprietăți pentru dialoguri
-        private bool _isStatisticsVisible = false;
-        private bool _isAboutVisible = false;
-
         // Proprietăți publice
         public User CurrentPlayer
         {
@@ -236,27 +232,7 @@ namespace MemoryGame.ViewModels
             }
         }
 
-        // Proprietăți pentru dialoguri
-        public bool IsStatisticsVisible
-        {
-            get => _isStatisticsVisible;
-            set
-            {
-                _isStatisticsVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsAboutVisible
-        {
-            get => _isAboutVisible;
-            set
-            {
-                _isAboutVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
+        
         // Proprietăți calculate
         public string WinRateFormatted
         {
@@ -285,8 +261,6 @@ namespace MemoryGame.ViewModels
         public ICommand ExitCommand { get; }
         public ICommand ShowStatisticsCommand { get; }
         public ICommand ShowAboutCommand { get; }
-        public ICommand CloseStatisticsCommand { get; }
-        public ICommand CloseAboutCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand BackToLoginCommand { get; }
 
@@ -300,10 +274,8 @@ namespace MemoryGame.ViewModels
             ExitCommand = new RelayCommand(_ => BackToLogin());
 
             ShowStatisticsCommand = new RelayCommand(_ => ShowStatisticsWindow());
-            CloseStatisticsCommand = new RelayCommand(_ => IsStatisticsVisible = false);
 
-            ShowAboutCommand = new RelayCommand(_ => IsAboutVisible = true);
-            CloseAboutCommand = new RelayCommand(_ => IsAboutVisible = false);
+            ShowAboutCommand = new RelayCommand(_ => ShowAboutWindow());
 
             StartGameCommand = new RelayCommand(_ => StartGame(), _ => IsConfigurationValid());
             BackToLoginCommand = new RelayCommand(_ => BackToLogin());
@@ -313,6 +285,23 @@ namespace MemoryGame.ViewModels
 
             // Validăm configurația inițială
             ValidateCardCount();
+        }
+
+        private void ShowAboutWindow()
+        {
+            try
+            {
+                var aboutView = new AboutView();
+                aboutView.Owner = Application.Current.MainWindow;
+                aboutView.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la afișarea informațiilor About: {ex.Message}",
+                              "Eroare",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
+            }
         }
 
         private void ShowStatisticsWindow()
@@ -331,7 +320,7 @@ namespace MemoryGame.ViewModels
                               MessageBoxImage.Error);
             }
         }
-
+         
         // Metodă pentru a reseta setările jocului
         private void ResetGameSettings()
         {
