@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using MemoryGame.Commands;
 using MemoryGame.Models;
 using MemoryGame.Services;
+using MemoryGame.Views;
 using Microsoft.Win32;
 
 namespace MemoryGame.ViewModels
@@ -683,10 +684,17 @@ namespace MemoryGame.ViewModels
                 }
             }
 
-            // Navigăm înapoi la ecranul de configurare joc
-            Messenger.Default.Send(new NavigationMessage { Destination = "GameView", Parameter = CurrentPlayer });
-        }
+            // Navigăm direct către ecranul de login în loc de ecranul de configurare joc
+            var loginView = new LoginView();
+            loginView.Show();
 
+            // Închide fereastra curentă
+            if (Application.Current.MainWindow is Window currentWindow)
+            {
+                Application.Current.MainWindow = loginView;
+                currentWindow.Close();
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged

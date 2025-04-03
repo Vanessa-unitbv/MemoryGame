@@ -24,11 +24,13 @@ namespace MemoryGame.Views
         {
             base.OnClosed(e);
 
-            // Navigăm înapoi la ecranul de configurare joc
-            if (_viewModel.CurrentPlayer != null)
+            // Când fereastra este închisă, verificăm dacă ea este încă MainWindow
+            // Dacă da, deschidem fereastra de login
+            if (Application.Current.MainWindow == this)
             {
-                var gameView = new GameView(_viewModel.CurrentPlayer);
-                gameView.Show();
+                var loginView = new LoginView();
+                loginView.Show();
+                Application.Current.MainWindow = loginView;
             }
         }
     }
