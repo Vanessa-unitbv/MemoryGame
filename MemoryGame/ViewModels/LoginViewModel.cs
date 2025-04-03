@@ -10,6 +10,7 @@ using MemoryGame.Models;
 using MemoryGame.Services;
 using MemoryGame.Views;
 using System.ComponentModel;
+using System.Text.Json;
 
 namespace MemoryGame.ViewModels
 {
@@ -209,16 +210,77 @@ namespace MemoryGame.ViewModels
         {
             if (SelectedUser == null) return;
 
-            var result = MessageBox.Show($"Ești sigur că vrei să ștergi utilizatorul '{SelectedUser.Username}'?",
+            var result = MessageBox.Show($"Ești sigur că vrei să ștergi utilizatorul '{SelectedUser.Username}' și toate jocurile salvate?\nAceastă acțiune nu poate fi anulată!",
                                         "Confirmare ștergere",
                                         MessageBoxButton.YesNo,
-                                        MessageBoxImage.Question);
+                                        MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {
-                _userService.DeleteUser(SelectedUser.Username);
-                Users.Remove(SelectedUser);
-                SelectedUser = null;
+                try
+                {
+                    // 1. Ștergem jocurile salvate ale utilizatorului
+                    DeleteUserSavedGames(SelectedUser.Username);
+
+                    // 2. Ștergem utilizatorul din lista
+                    _userService.DeleteUser(SelectedUser.Username);
+                    Users.Remove(SelectedUser);
+                    SelectedUser = null;
+
+                    MessageBox.Show($"Utilizatorul și toate jocurile salvate au fost șterse cu succes.",
+                                   "Ștergere reușită",
+                                   MessageBoxButton.OK,
+                                   MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"A apărut o eroare la ștergerea utilizatorului: {ex.Message}",
+                                   "Eroare",
+                                   MessageBoxButton.OK,
+                                   MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void DeleteUserSavedGames(string username)
+        {
+            try
+            {
+                string saveDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SavedGames");
+
+                if (Directory.Exists(saveDir))
+                {
+                    // Obținem toate fișierele salvate
+                    var savedFiles = Directory.GetFiles(saveDir, "*.mem");
+
+                    foreach (var file in savedFiles)
+                    {
+                        try
+                        {
+                            // Citim conținutul fișierului
+                            string json = File.ReadAllText(file);
+                            var gameState = JsonSerializer.Deserialize<GameState>(json);
+
+                            // Verificăm dacă jocul aparține utilizatorului care va fi șters
+                            if (gameState != null && gameState.PlayerName == username)
+                            {
+                                // Ștergem fișierul
+                                File.Delete(file);
+                            }
+                        }
+                        catch
+                        {
+                            // Ignorăm erorile individuale la citirea fișierelor
+                            // și continuăm cu următorul fișier
+                            continue;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Propagăm eroarea pentru a fi tratată în metoda apelantă
+                throw new Exception($"Eroare la ștergerea jocurilor salvate: {ex.Message}", ex);
             }
         }
 

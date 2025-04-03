@@ -5,77 +5,85 @@
         Title="Open Saved Game" Height="400" Width="500"
         WindowStartupLocation="CenterOwner"
         Background="MistyRose">
-	<Window.Resources>
-		<converters:NullToBoolConverter x:Key="NullToBoolConverter" />
-	</Window.Resources>
-	<Grid Margin="10">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
+    <Window.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0"
-                   Text="Select a saved game to open:"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Foreground="IndianRed"
+        <TextBlock Grid.Row="0" 
+                   Text="Select a saved game to open:" 
+                   FontSize="16" 
+                   FontWeight="Bold" 
+                   Foreground="IndianRed" 
                    Margin="0,0,0,10"/>
 
-		<ListView Grid.Row="1"
+        <ListView Grid.Row="1" 
                   x:Name="SavedGamesList"
+                  ItemsSource="{Binding SavedGames}"
+                  SelectedItem="{Binding SelectedGame, Mode=TwoWay}"
                   Background="LavenderBlush"
                   BorderBrush="IndianRed"
                   Margin="0,5"
                   SelectionMode="Single">
-			<ListView.View>
-				<GridView>
-					<GridViewColumn Header="Player" Width="100" DisplayMemberBinding="{Binding PlayerName}"/>
-					<GridViewColumn Header="Mode" Width="70" DisplayMemberBinding="{Binding GameMode}"/>
-					<GridViewColumn Header="Date" Width="150" DisplayMemberBinding="{Binding SavedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
-					<GridViewColumn Header="Board" Width="80">
-						
-						<GridViewColumn.CellTemplate>
-							<DataTemplate>
-								<TextBlock>
-									<TextBlock.Text>
-										<MultiBinding StringFormat="{}{0}x{1}">
-											<Binding Path="Rows"/>
-											<Binding Path="Columns"/>
-										</MultiBinding>
-									</TextBlock.Text>
-								</TextBlock>
-							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-					</GridViewColumn>
-					<GridViewColumn Header="Time Left" Width="80" DisplayMemberBinding="{Binding RemainingTime, StringFormat={}{0} sec}"/>
-				</GridView>
-			</ListView.View>
-		</ListView>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Player" Width="90" DisplayMemberBinding="{Binding PlayerName}"/>
+                    <GridViewColumn Header="Date" Width="120" DisplayMemberBinding="{Binding SavedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
+                    <GridViewColumn Header="Mode" Width="60" DisplayMemberBinding="{Binding GameMode}"/>
+                    <GridViewColumn Header="Board" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}x{1}">
+                                            <Binding Path="Rows"/>
+                                            <Binding Path="Columns"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Total Time" Width="65" DisplayMemberBinding="{Binding TotalTime, StringFormat={}{0} sec}"/>
+                    <GridViewColumn Header="Time Left" Width="65" DisplayMemberBinding="{Binding RemainingTime, StringFormat={}{0} sec}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
-		<StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
                     Margin="0,10,0,0">
-			<Button x:Name="OpenButton"
-                    Content="Open"
-                    Width="80"
-                    Height="30"
+            <Button Content="Delete" 
+                    Width="80" 
+                    Height="30" 
                     Margin="0,0,10,0"
                     Background="LavenderBlush"
                     Foreground="IndianRed"
                     BorderBrush="IndianRed"
-                    Click="OpenButton_Click"
-                    IsEnabled="{Binding ElementName=SavedGamesList, Path=SelectedItem, Converter={StaticResource NullToBoolConverter}}"/>
+                    Command="{Binding DeleteGameCommand}"/>
 
-			<Button x:Name="CancelButton"
-                    Content="Cancel"
-                    Width="80"
+            <Button Content="Open" 
+                    Width="80" 
+                    Height="30" 
+                    Margin="0,0,10,0"
+                    Background="LavenderBlush"
+                    Foreground="IndianRed"
+                    BorderBrush="IndianRed"
+                    Command="{Binding OpenGameCommand}"/>
+
+            <Button Content="Cancel" 
+                    Width="80" 
                     Height="30"
                     Background="LavenderBlush"
                     Foreground="IndianRed"
                     BorderBrush="IndianRed"
-                    Click="CancelButton_Click"/>
-		</StackPanel>
-	</Grid>
+                    Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </Grid>
 </Window>

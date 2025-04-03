@@ -26,13 +26,7 @@
 
         <!-- Top Menu -->
         <Menu Grid.Row="0" Margin="0,0,0,10" Background="LavenderBlush">
-            <MenuItem Header="File" Foreground="IndianRed">
-                <MenuItem Header="New Game" Command="{Binding NewGameCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
-                <MenuItem Header="Open Game" Command="{Binding OpenGameCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
-                <MenuItem Header="Save Game" Command="{Binding SaveGameCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
-                <Separator />
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
-            </MenuItem>
+            <MenuItem Header="Exit" Command="{Binding ExitCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
             <MenuItem Header="Statistics" Command="{Binding ShowStatisticsCommand}" Foreground="IndianRed"/>
             <MenuItem Header="Help" Foreground="IndianRed">
                 <MenuItem Header="About" Command="{Binding ShowAboutCommand}" Foreground="IndianRed" Background="LavenderBlush"/>
@@ -196,7 +190,7 @@
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center" 
                     Margin="0,20,0,0">
-            <Button Content="Start Game" 
+            <Button Content="New Game" 
                     Command="{Binding StartGameCommand}" 
                     Width="120" 
                     Height="35" 

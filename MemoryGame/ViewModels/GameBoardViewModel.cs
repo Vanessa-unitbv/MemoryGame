@@ -365,10 +365,20 @@ namespace MemoryGame.ViewModels
                 _userService.SaveUsers(users);
             }
 
-            // Salvăm starea jocului ca finalizat (dacă a fost încărcat dintr-un fișier de salvare)
-            if (!string.IsNullOrEmpty(_loadedGameFilePath))
+            // Ștergem fișierul de salvare dacă jocul a fost încărcat dintr-un fișier
+            if (!string.IsNullOrEmpty(_loadedGameFilePath) && File.Exists(_loadedGameFilePath))
             {
-                SaveGame(); // Salvăm jocul cu flag-ul GameEnded = true
+                try
+                {
+                    File.Delete(_loadedGameFilePath);
+                    // Resetăm calea către fișier după ștergere
+                    _loadedGameFilePath = string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    // Tratăm posibile erori la ștergerea fișierului (opțional)
+                    Console.WriteLine($"Eroare la ștergerea fișierului de salvare: {ex.Message}");
+                }
             }
 
             // Afișăm mesajul de final
