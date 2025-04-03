@@ -31,8 +31,10 @@
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Header="Player" Width="100" DisplayMemberBinding="{Binding PlayerName}"/>
+					<GridViewColumn Header="Mode" Width="70" DisplayMemberBinding="{Binding GameMode}"/>
 					<GridViewColumn Header="Date" Width="150" DisplayMemberBinding="{Binding SavedAt, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
 					<GridViewColumn Header="Board" Width="80">
+						
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<TextBlock>

@@ -59,7 +59,17 @@ namespace MemoryGame.Models
         /// </summary>
         /// 
         public List<CardState> Cards { get; set; } = new List<CardState>();
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string GameMode
+        {
+            get
+            {
+                return (Rows == 4 && Columns == 4) ? "Standard" : "Custom";
+            }
+        }
     }
+
 
     /// <summary>
     /// Clasa pentru stocarea stării unui card, folosită la salvarea jocului
