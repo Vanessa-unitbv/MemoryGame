@@ -299,7 +299,7 @@ namespace MemoryGame.ViewModels
             SaveGameCommand = new RelayCommand(_ => SaveGame());
             ExitCommand = new RelayCommand(_ => BackToLogin());
 
-            ShowStatisticsCommand = new RelayCommand(_ => IsStatisticsVisible = true);
+            ShowStatisticsCommand = new RelayCommand(_ => ShowStatisticsWindow());
             CloseStatisticsCommand = new RelayCommand(_ => IsStatisticsVisible = false);
 
             ShowAboutCommand = new RelayCommand(_ => IsAboutVisible = true);
@@ -315,6 +315,22 @@ namespace MemoryGame.ViewModels
             ValidateCardCount();
         }
 
+        private void ShowStatisticsWindow()
+        {
+            try
+            {
+                var statisticsView = new StatisticsView();
+                statisticsView.Owner = Application.Current.MainWindow;
+                statisticsView.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la afișarea statisticilor: {ex.Message}",
+                              "Eroare",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
+            }
+        }
 
         // Metodă pentru a reseta setările jocului
         private void ResetGameSettings()
