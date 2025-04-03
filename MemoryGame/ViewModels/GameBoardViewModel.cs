@@ -29,7 +29,6 @@ namespace MemoryGame.ViewModels
         private Card _secondSelectedCard;
         private bool _isCheckingMatch;
         private int _remainingTimeInSeconds;
-        private int _score;
         private bool _gameEnded;
         private string _loadedGameFilePath;
 
@@ -123,18 +122,7 @@ namespace MemoryGame.ViewModels
             }
         }
 
-        public int Score
-        {
-            get => _score;
-            set
-            {
-                if (_score != value)
-                {
-                    _score = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+       
 
         public bool GameEnded
         {
@@ -398,8 +386,8 @@ namespace MemoryGame.ViewModels
 
             // Afișăm mesajul de final
             string message = isWin
-                ? $"Felicitări, {CurrentPlayer.Username}! Ai câștigat jocul!\nScor: {Score}"
-                : $"Timpul a expirat! Ai pierdut jocul, {CurrentPlayer.Username}.\nScor: {Score}";
+                ? $"Felicitări, {CurrentPlayer.Username}! Ai câștigat jocul!"
+                : $"Timpul a expirat! Ai pierdut jocul, {CurrentPlayer.Username}.";
 
             MessageBox.Show(message, "Joc terminat", MessageBoxButton.OK, isWin ? MessageBoxImage.Information : MessageBoxImage.Exclamation);
         }
@@ -463,7 +451,7 @@ namespace MemoryGame.ViewModels
                 // Cardurile se potrivesc
                 _firstSelectedCard.IsMatched = true;
                 _secondSelectedCard.IsMatched = true;
-                Score += 10; // Adăugăm puncte
+               
 
                 // Verificăm dacă toate cardurile au fost potrivite
                 if (Cards.All(c => c.IsMatched))

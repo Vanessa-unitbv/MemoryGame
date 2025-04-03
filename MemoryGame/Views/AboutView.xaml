@@ -5,84 +5,92 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:MemoryGame.ViewModels"
         mc:Ignorable="d"
-        Title="About Memory Game" Height="350" Width="450"
+        Title="About Memory Game" Height="400" Width="450"
         WindowStartupLocation="CenterOwner"
         Background="MistyRose">
+	<Window.Resources>
+		<Style x:Key="LinkTextBlockStyle" TargetType="TextBlock">
+			<Setter Property="Foreground" Value="Blue"/>
+			<Setter Property="TextDecorations" Value="Underline"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Foreground" Value="DarkBlue"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</Window.Resources>
 
-    <Window.Resources>
-        <Style x:Key="LinkTextBlockStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="Blue"/>
-            <Setter Property="TextDecorations" Value="Underline"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="DarkBlue"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+	<Grid Margin="25">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-    <Grid Margin="25">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <!-- Header -->
-        <TextBlock Grid.Row="0" 
-                   Text="About Memory Game" 
-                   FontSize="24" 
-                   FontWeight="Bold" 
+		<!-- Header -->
+		<TextBlock Grid.Row="0"
+                   Text="About Memory Game"
+                   FontSize="24"
+                   FontWeight="Bold"
                    Foreground="IndianRed"
                    Margin="0,0,0,20"/>
 
-        <!-- Content -->
-        <StackPanel Grid.Row="1" Margin="10,0">
-            <TextBlock Text="Memory Game" 
-                       FontWeight="Bold" 
-                       Foreground="IndianRed" 
-                       FontSize="18" 
+		<!-- Content -->
+		<StackPanel Grid.Row="1" Margin="10,0">
+			<TextBlock Text="Memory Game"
+                       FontWeight="Bold"
+                       Foreground="IndianRed"
+                       FontSize="18"
                        Margin="0,0,0,15"/>
 
-            <StackPanel Margin="0,5">
-                <TextBlock Text="Student:" 
-                           FontWeight="Bold" 
+			<StackPanel Margin="0,5">
+				<TextBlock Text="Student:"
+                           FontWeight="Bold"
                            Foreground="IndianRed"/>
-                <TextBlock Text="Palatka Vanessa" 
+				<TextBlock Text="Palatka Vanessa"
                            Margin="15,3,0,0"/>
-            </StackPanel>
+			</StackPanel>
 
-            <StackPanel Margin="0,5">
-                <TextBlock Text="Email:" 
-                           FontWeight="Bold" 
+			<StackPanel Margin="0,5">
+				<TextBlock Text="Email:"
+                           FontWeight="Bold"
                            Foreground="IndianRed"/>
-                <TextBlock x:Name="EmailLink" 
-                           Text="vanessa.palatka@student.unitbv.ro" 
+				<TextBlock x:Name="EmailLink"
+                           Text="vanessa.palatka@student.unitbv.ro"
                            Margin="15,3,0,0"
                            Style="{StaticResource LinkTextBlockStyle}"
                            MouseLeftButtonDown="EmailLink_MouseLeftButtonDown"/>
-            </StackPanel>
+			</StackPanel>
 
-            <StackPanel Margin="0,5">
-                <TextBlock Text="Grupă:" 
-                           FontWeight="Bold" 
+			<StackPanel Margin="0,5">
+				<TextBlock Text="Grupă:"
+                           FontWeight="Bold"
                            Foreground="IndianRed"/>
-                <TextBlock Text="10LF332" 
+				<TextBlock Text="10LF332"
                            Margin="15,3,0,0"/>
-            </StackPanel>
-        </StackPanel>
+			</StackPanel>
 
-        <!-- Close Button -->
-        <Button Grid.Row="2" 
-                Content="Close" 
-                Width="100" 
-                Height="35" 
+			<StackPanel Margin="0,5">
+				<TextBlock Text="Specializare:"
+                           FontWeight="Bold"
+                           Foreground="IndianRed"/>
+				<TextBlock Text="Informatică Aplicată"
+                           Margin="15,3,0,0"/>
+			</StackPanel>
+
+		</StackPanel>
+
+		<!-- Close Button -->
+		<Button Grid.Row="2"
+                Content="Close"
+                Width="100"
+                Height="35"
                 Margin="0,10,0,0"
                 Background="LavenderBlush"
                 Foreground="IndianRed"
                 BorderBrush="IndianRed"
                 Command="{Binding CloseCommand}"
                 HorizontalAlignment="Right"/>
-    </Grid>
+	</Grid>
 </Window>

@@ -121,9 +121,6 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <TextBlock Text="Player: " Foreground="IndianRed" FontWeight="Bold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding CurrentPlayer.Username}" Foreground="IndianRed" VerticalAlignment="Center" Margin="0,0,15,0" />
-
-                    <TextBlock Text="Score: " Foreground="IndianRed" FontWeight="Bold" VerticalAlignment="Center" />
-                    <TextBlock Text="{Binding Score}" Foreground="IndianRed" VerticalAlignment="Center" />
                 </StackPanel>
 
                 <!-- Timp rămas -->
