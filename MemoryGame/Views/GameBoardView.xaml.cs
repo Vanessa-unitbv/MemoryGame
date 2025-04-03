@@ -18,14 +18,23 @@ namespace MemoryGame.Views
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             DataContext = _viewModel;
         }
+        /// <summary>
+        /// Oprește timer-ul jocului în mod explicit
+        /// </summary>
+
 
         // Dacă se închide fereastra direct, ne asigurăm că oprim timer-ul
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
 
+            // Oprim explicit timer-ul din ViewModel înainte de a închide fereastra
+            if (_viewModel != null)
+            {
+                _viewModel.StopTimer();
+            }
+
             // Când fereastra este închisă, verificăm dacă ea este încă MainWindow
-            // Dacă da, deschidem fereastra de login
             if (Application.Current.MainWindow == this)
             {
                 var loginView = new LoginView();

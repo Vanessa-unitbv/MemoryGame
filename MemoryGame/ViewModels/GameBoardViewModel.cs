@@ -182,8 +182,11 @@ namespace MemoryGame.ViewModels
             LoadImages();
             InitializeCards();
 
-            // Pornim timerul
-            StartTimer();
+            // Pornim timerul doar dacă fereastra este vizibilă
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                StartTimer();
+            }), DispatcherPriority.Loaded);
         }
 
         #endregion
@@ -345,10 +348,22 @@ namespace MemoryGame.ViewModels
 
             _gameTimer.Start();
         }
-
+        public void StopTimer()
+        {
+            if (_gameTimer != null)
+            {
+                _gameTimer.Stop();
+            }
+        }
         private void EndGame(bool isWin)
         {
-            _gameTimer.Stop();
+
+            if (_gameTimer != null)
+            {
+                _gameTimer.Stop();
+                _gameTimer = null; // Eliberăm referința pentru a permite colectarea gunoiului
+            }
+
             GameEnded = true;
 
             // Actualizăm statisticile
@@ -671,10 +686,10 @@ namespace MemoryGame.ViewModels
 
         private void Exit()
         {
-            // Oprim timerul
+            // Oprim timerul - asigură-te că acest lucru se întâmplă primul
             _gameTimer?.Stop();
 
-            // Întrebăm utilizatorul dacă vrea să salveze jocul înainte de a ieși
+            // Restul codului rămâne neschimbat
             if (!GameEnded)
             {
                 var result = MessageBox.Show("Doriți să salvați jocul înainte de a ieși?",
@@ -688,13 +703,13 @@ namespace MemoryGame.ViewModels
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {
-                    // Repornim timerul și anulăm ieșirea
+                    // Repornim timerul doar dacă utilizatorul anulează ieșirea
                     _gameTimer?.Start();
                     return;
                 }
             }
 
-            // Navigăm direct către ecranul de login în loc de ecranul de configurare joc
+            // Navigăm direct către ecranul de login
             var loginView = new LoginView();
             loginView.Show();
 
