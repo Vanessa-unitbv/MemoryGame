@@ -17,7 +17,8 @@ namespace MemoryGame.Services
         public UserService()
         {
             // Folosim un path relativ față de directorul executabil
-            _filePath = Path.Combine(Directory.GetCurrentDirectory(), UsersFileName);
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            _filePath = Path.Combine(baseDir, UsersFileName);
         }
 
         public List<User> LoadUsers()

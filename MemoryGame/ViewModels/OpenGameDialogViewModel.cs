@@ -51,7 +51,15 @@ namespace MemoryGame.ViewModels
         private void LoadSavedGames()
         {
             SavedGames.Clear();
-            string saveDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SavedGames");
+
+            // Folosim o cale relativă la directorul aplicației
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string saveDir = Path.Combine(baseDir, "SavedGames");
+
+            if (!Directory.Exists(saveDir))
+            {
+                Directory.CreateDirectory(saveDir);
+            }
 
             if (Directory.Exists(saveDir))
             {

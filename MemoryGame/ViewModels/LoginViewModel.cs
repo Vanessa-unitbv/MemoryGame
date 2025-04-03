@@ -111,12 +111,15 @@ namespace MemoryGame.ViewModels
 
         private List<string> LoadAvailableAvatars()
         {
-            // Aici vom încărca lista de avatare disponibile din directorul Resurses
-            string avatarsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resurses");
+            // Folosim calea relativă la directorul aplicației
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string avatarsDir = Path.Combine(baseDir, "Resurses", "Avatars");
 
             // Dacă directorul nu există, îl creăm
             if (!Directory.Exists(avatarsDir))
+            {
                 Directory.CreateDirectory(avatarsDir);
+            }
 
             // Cautăm toate fișierele de imagini din director
             string[] avatarFiles = Directory.GetFiles(avatarsDir, "*.jpg")
@@ -124,24 +127,19 @@ namespace MemoryGame.ViewModels
                                   .Concat(Directory.GetFiles(avatarsDir, "*.gif"))
                                   .ToArray();
 
-            // Dacă nu găsim imagini, folosim căi implicite pentru exemplu
+            // Dacă nu găsim imagini, returnăm o listă goală sau implicit
             if (avatarFiles.Length == 0)
             {
-                return new List<string>
-                {
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar1.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar2.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar3.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar4.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar5.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar6.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar7.png",
-                    "C:/Users/palat/OneDrive/Documente/Desktop/A2S2/MVP/MemoryGame/MemoryGame/Resurses/Avatars/Avatar8.png"
-                };
+                // Creăm niște avatare default în memoria aplicației
+                // Această soluție este temporară - ar fi mai bine să incluzi
+                // câteva avatare implicite în proiect
+                MessageBox.Show("Nu s-au găsit avatare. Te rugăm să adaugi imagini în directorul Avatars.",
+                               "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
+                return new List<string>();
             }
+
             return avatarFiles.ToList();
         }
-
         private void SelectNextAvatar()
         {
             if (_availableAvatars.Count == 0) return;

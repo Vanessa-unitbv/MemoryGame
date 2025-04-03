@@ -122,8 +122,24 @@ namespace MemoryGame.ViewModels
             }
         }
 
-       
 
+        private string GetResourcePath(string folderName)
+        {
+            // Obține directorul de bază al aplicației
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            // Construiește calea către directorul de resurse
+            string resourcePath = Path.Combine(baseDir, "Resources", folderName);
+
+            // Verifică dacă directorul există
+            if (!Directory.Exists(resourcePath))
+            {
+                // Creează directorul dacă nu există
+                Directory.CreateDirectory(resourcePath);
+            }
+
+            return resourcePath;
+        }
         public bool GameEnded
         {
             get => _gameEnded;
@@ -202,22 +218,16 @@ namespace MemoryGame.ViewModels
                         break;
                 }
 
-                // Construim calea spre directorul Resurses/[Categoria]
+                // Construim calea către directorul Resurses/[Categoria]
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 string imagesFolder = Path.Combine(baseDir, "Resurses", categoryFolder);
 
-                // Verificăm dacă directorul există, dacă nu, încercăm un path absolut ca alternativă
+                // Verificăm dacă directorul există, dacă nu, îl creăm
                 if (!Directory.Exists(imagesFolder))
                 {
-                    // Încercăm calea absolută bazată pe exemplul tău
-                    imagesFolder = $@"C:\Users\palat\OneDrive\Documente\Desktop\A2S2\MVP\MemoryGame\MemoryGame\Resurses\{categoryFolder}";
-
-                    if (!Directory.Exists(imagesFolder))
-                    {
-                        MessageBox.Show($"Directorul de imagini pentru categoria {categoryFolder} nu există la locația: {imagesFolder}",
-                                        "Avertisment", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
+                    Directory.CreateDirectory(imagesFolder);
+                    MessageBox.Show($"Directorul pentru categoria {categoryFolder} a fost creat la locația: {imagesFolder}\nTe rugăm să adaugi imagini în acest director.",
+                                   "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
                 // Obținem toate fișierele imagine din director
@@ -234,9 +244,6 @@ namespace MemoryGame.ViewModels
                 }
 
                 _imageFiles.AddRange(imageFiles);
-
-                // Afișăm un mesaj pentru debug
-                //MessageBox.Show($"S-au încărcat {_imageFiles.Count} imagini din directorul: {imagesFolder}");
             }
             catch (Exception ex)
             {
@@ -501,7 +508,9 @@ namespace MemoryGame.ViewModels
             try
             {
                 // Creăm directorul de salvări dacă nu există
-                string saveDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SavedGames");
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string saveDir = Path.Combine(baseDir, "SavedGames");
+
                 if (!Directory.Exists(saveDir))
                 {
                     Directory.CreateDirectory(saveDir);
@@ -510,14 +519,13 @@ namespace MemoryGame.ViewModels
                 string fullPath;
 
                 // Verificăm dacă jocul a fost deja încărcat dintr-un fișier de salvare
-                // (dacă există o referință la un fișier de salvare, vom actualiza același fișier)
                 if (!string.IsNullOrEmpty(_loadedGameFilePath))
                 {
                     fullPath = _loadedGameFilePath;
                 }
                 else
                 {
-                    // Generăm un nume nou pentru salvare
+                    // Generăm numele fișierului bazat pe numele utilizatorului și data/ora actuală
                     string fileName = $"MemoryGame_{CurrentPlayer.Username}_{DateTime.Now:yyyyMMdd_HHmmss}.mem";
                     fullPath = Path.Combine(saveDir, fileName);
                 }
@@ -535,7 +543,7 @@ namespace MemoryGame.ViewModels
                     TotalTime = TotalTimeInSeconds,
                     RemainingTime = RemainingTimeInSeconds,
                     SavedAt = DateTime.Now,
-                    IsCompleted = GameEnded, // Adăugăm flag-ul care indică dacă jocul este terminat
+                    IsCompleted = GameEnded,
                     Cards = Cards.Select((card, index) => new CardState
                     {
                         Id = card.Id,
