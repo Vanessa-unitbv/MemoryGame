@@ -44,8 +44,20 @@ namespace MemoryGame.Models
         public DateTime SavedAt { get; set; }
 
         /// <summary>
+        /// Calea către fișierul de salvare (nu este serializată)
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string FilePath { get; set; }
+
+        /// <summary>
         /// Lista cardurilor și starea lor la momentul salvării
         /// </summary>
+        /// 
+        public bool IsCompleted { get; set; }
+        /// <summary>
+        /// Indică dacă cardul este întors (cu fața în sus)
+        /// </summary>
+        /// 
         public List<CardState> Cards { get; set; } = new List<CardState>();
     }
 
@@ -69,8 +81,9 @@ namespace MemoryGame.Models
         /// </summary>
         public string ImagePath { get; set; }
 
+
         /// <summary>
-        /// Indică dacă cardul este întors (cu fața în sus)
+        /// Indică dacă jocul a fost terminat (câștigat sau pierdut)
         /// </summary>
         public bool IsFlipped { get; set; }
 

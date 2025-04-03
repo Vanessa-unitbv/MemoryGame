@@ -30,6 +30,7 @@ namespace MemoryGame.ViewModels
         private int _remainingTimeInSeconds;
         private int _score;
         private bool _gameEnded;
+        private string _loadedGameFilePath;
 
         #endregion
 
@@ -363,6 +364,12 @@ namespace MemoryGame.ViewModels
                 _userService.SaveUsers(users);
             }
 
+            // Salvăm starea jocului ca finalizat (dacă a fost încărcat dintr-un fișier de salvare)
+            if (!string.IsNullOrEmpty(_loadedGameFilePath))
+            {
+                SaveGame(); // Salvăm jocul cu flag-ul GameEnded = true
+            }
+
             // Afișăm mesajul de final
             string message = isWin
                 ? $"Felicitări, {CurrentPlayer.Username}! Ai câștigat jocul!\nScor: {Score}"
@@ -479,48 +486,86 @@ namespace MemoryGame.ViewModels
         {
             try
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog
+                // Creăm directorul de salvări dacă nu există
+                string saveDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SavedGames");
+                if (!Directory.Exists(saveDir))
                 {
-                    Filter = "Memory Game Files (*.mem)|*.mem|All Files (*.*)|*.*",
-                    Title = "Save Game",
-                    DefaultExt = "mem"
+                    Directory.CreateDirectory(saveDir);
+                }
+
+                string fullPath;
+
+                // Verificăm dacă jocul a fost deja încărcat dintr-un fișier de salvare
+                // (dacă există o referință la un fișier de salvare, vom actualiza același fișier)
+                if (!string.IsNullOrEmpty(_loadedGameFilePath))
+                {
+                    fullPath = _loadedGameFilePath;
+                }
+                else
+                {
+                    // Generăm un nume nou pentru salvare
+                    string fileName = $"MemoryGame_{CurrentPlayer.Username}_{DateTime.Now:yyyyMMdd_HHmmss}.mem";
+                    fullPath = Path.Combine(saveDir, fileName);
+                }
+
+                // Oprim timerul în timpul salvării
+                _gameTimer?.Stop();
+
+                // Creăm obiectul GameState cu toate datele necesare
+                GameState gameState = new GameState
+                {
+                    PlayerName = CurrentPlayer.Username,
+                    Category = Category,
+                    Rows = Rows,
+                    Columns = Columns,
+                    TotalTime = TotalTimeInSeconds,
+                    RemainingTime = RemainingTimeInSeconds,
+                    SavedAt = DateTime.Now,
+                    IsCompleted = GameEnded, // Adăugăm flag-ul care indică dacă jocul este terminat
+                    Cards = Cards.Select((card, index) => new CardState
+                    {
+                        Id = card.Id,
+                        Value = card.Value,
+                        ImagePath = card.ImagePath,
+                        IsFlipped = card.IsFlipped,
+                        IsMatched = card.IsMatched,
+                        Position = index
+                    }).ToList()
                 };
 
-                if (saveFileDialog.ShowDialog() == true)
+                // Serializăm și salvăm starea jocului în format JSON
+                string json = JsonSerializer.Serialize(gameState, new JsonSerializerOptions
                 {
-                    GameState gameState = new GameState
-                    {
-                        PlayerName = CurrentPlayer.Username,
-                        Category = Category,
-                        Rows = Rows,
-                        Columns = Columns,
-                        TotalTime = TotalTimeInSeconds,
-                        RemainingTime = RemainingTimeInSeconds,
-                        SavedAt = DateTime.Now,
-                        Cards = Cards.Select((card, index) => new CardState
-                        {
-                            Id = card.Id,
-                            Value = card.Value,
-                            ImagePath = card.ImagePath,
-                            IsFlipped = card.IsFlipped,
-                            IsMatched = card.IsMatched,
-                            Position = index
-                        }).ToList()
-                    };
+                    WriteIndented = true
+                });
+                File.WriteAllText(fullPath, json);
 
-                    string json = JsonSerializer.Serialize(gameState, new JsonSerializerOptions { WriteIndented = true });
-                    File.WriteAllText(saveFileDialog.FileName, json);
+                // Actualizăm calea către fișierul de salvare
+                _loadedGameFilePath = fullPath;
 
-                    MessageBox.Show($"Jocul a fost salvat cu succes în fișierul: {saveFileDialog.FileName}",
-                                    "Salvare reușită", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Afișăm un mesaj de confirmare
+                MessageBox.Show($"Jocul a fost salvat cu succes!",
+                               "Salvare reușită", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Repornește timerul doar dacă jocul nu s-a terminat
+                if (!GameEnded)
+                {
+                    _gameTimer?.Start();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Eroare la salvarea jocului: {ex.Message}",
                                 "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                // Asigurăm-ne că timerul repornește în caz de eroare
+                if (!GameEnded)
+                {
+                    _gameTimer?.Start();
+                }
             }
         }
+
 
         public static GameBoardViewModel LoadGame(string filePath)
         {
@@ -543,6 +588,14 @@ namespace MemoryGame.ViewModels
                     return null;
                 }
 
+                // Verificăm dacă jocul este terminat
+                if (gameState.IsCompleted)
+                {
+                    MessageBox.Show("Acest joc este deja terminat și nu poate fi continuat.",
+                                  "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return null;
+                }
+
                 // Obținem utilizatorul
                 var userService = new UserService();
                 var users = userService.LoadUsers();
@@ -558,11 +611,19 @@ namespace MemoryGame.ViewModels
                 // Creăm view model-ul
                 var viewModel = new GameBoardViewModel(player, gameState.Category, gameState.Rows, gameState.Columns, gameState.TotalTime);
 
+                // Setăm calea către fișierul de salvare pentru a putea actualiza același fișier
+                viewModel._loadedGameFilePath = filePath;
+
+                // Oprim timerul pentru a seta corect timpul
+                viewModel._gameTimer?.Stop();
+
                 // Setăm timpul rămas
                 viewModel.RemainingTimeInSeconds = gameState.RemainingTime;
 
-                // Actualizăm cardurile
+                // Curățăm cardurile existente
                 viewModel.Cards.Clear();
+
+                // Adăugăm cardurile salvate în ordinea corectă
                 foreach (var cardState in gameState.Cards.OrderBy(c => c.Position))
                 {
                     viewModel.Cards.Add(new Card
@@ -575,6 +636,17 @@ namespace MemoryGame.ViewModels
                     });
                 }
 
+                // Repornește timerul doar dacă jocul nu a fost câștigat
+                bool allMatched = viewModel.Cards.All(c => c.IsMatched);
+                if (!allMatched)
+                {
+                    viewModel._gameTimer?.Start();
+                }
+                else
+                {
+                    viewModel.GameEnded = true;
+                }
+
                 return viewModel;
             }
             catch (Exception ex)
@@ -584,6 +656,7 @@ namespace MemoryGame.ViewModels
                 return null;
             }
         }
+
 
         private void Exit()
         {

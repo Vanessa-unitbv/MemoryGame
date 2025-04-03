@@ -286,22 +286,46 @@ namespace MemoryGame.ViewModels
         {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog
+                // Verificăm dacă utilizatorul curent este selectat
+                if (CurrentPlayer == null)
                 {
-                    Filter = "Memory Game Files (*.mem)|*.mem|All Files (*.*)|*.*",
-                    Title = "Open Saved Game"
-                };
+                    MessageBox.Show("Trebuie să selectați un utilizator înainte de a deschide un joc salvat.",
+                                    "Niciun utilizator selectat",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
 
-                if (openFileDialog.ShowDialog() == true)
+                // Deschidem dialogul personalizat pentru a alege un joc salvat
+                var openGameDialog = new OpenGameDialog();
+
+                if (openGameDialog.ShowDialog() == true && openGameDialog.SelectedGame != null)
                 {
-                    string fileName = openFileDialog.FileName;
+                    var selectedGame = openGameDialog.SelectedGame;
 
                     // Încărcăm jocul salvat
-                    var gameBoardViewModel = GameBoardViewModel.LoadGame(fileName);
+                    var gameBoardViewModel = GameBoardViewModel.LoadGame(selectedGame.FilePath);
 
                     if (gameBoardViewModel != null)
                     {
-                        // Deschidem fereastra jocului
+                        // Verificăm dacă jocul a fost salvat de același utilizator
+                        if (gameBoardViewModel.CurrentPlayer.Username != CurrentPlayer.Username)
+                        {
+                            var result = MessageBox.Show(
+                                $"Acest joc a fost salvat de utilizatorul '{gameBoardViewModel.CurrentPlayer.Username}', " +
+                                $"dar sunteți conectat ca '{CurrentPlayer.Username}'.\n\n" +
+                                "Doriți să deschideți acest joc oricum?",
+                                "Utilizator diferit",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question);
+
+                            if (result == MessageBoxResult.No)
+                            {
+                                return;
+                            }
+                        }
+
+                        // Deschide fereastra jocului
                         var gameBoardView = new GameBoardView(gameBoardViewModel);
                         gameBoardView.Show();
 
@@ -316,8 +340,8 @@ namespace MemoryGame.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening game: {ex.Message}",
-                                "Error",
+                MessageBox.Show($"Eroare la deschiderea jocului: {ex.Message}",
+                                "Eroare",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Error);
             }
