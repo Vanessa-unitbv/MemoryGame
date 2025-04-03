@@ -96,6 +96,43 @@ namespace MemoryGame.ViewModels
                 }
             }
         }
+        private bool _isValidCardCount = true;
+
+        public bool IsValidCardCount
+        {
+            get => _isValidCardCount;
+            private set
+            {
+                if (_isValidCardCount != value)
+                {
+                    _isValidCardCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string CardCountErrorMessage
+        {
+            get
+            {
+                if (IsValidCardCount)
+                    return string.Empty;
+
+                return "Numărul total de carduri trebuie să fie par";
+            }
+        }
+
+        private void ValidateCardCount()
+        {
+            if (IsCustomMode)
+            {
+                int totalCards = CustomRows * CustomColumns;
+                IsValidCardCount = (totalCards % 2 == 0);
+            }
+            else
+            {
+                IsValidCardCount = true;
+            }
+        }
 
         // Proprietăți pentru joc custom
         public int CustomRows
@@ -107,6 +144,10 @@ namespace MemoryGame.ViewModels
                 {
                     _customRows = value;
                     OnPropertyChanged();
+                    // Verificăm dacă numărul total de carduri este par
+                    ValidateCardCount();
+                    OnPropertyChanged(nameof(IsValidCardCount));
+                    OnPropertyChanged(nameof(CardCountErrorMessage));
                 }
             }
         }
@@ -120,10 +161,13 @@ namespace MemoryGame.ViewModels
                 {
                     _customColumns = value;
                     OnPropertyChanged();
+                    // Verificăm dacă numărul total de carduri este par
+                    ValidateCardCount();
+                    OnPropertyChanged(nameof(IsValidCardCount));
+                    OnPropertyChanged(nameof(CardCountErrorMessage));
                 }
             }
         }
-
         public int PlayerTimeSeconds
         {
             get => _playerTimeSeconds;
@@ -266,7 +310,11 @@ namespace MemoryGame.ViewModels
 
             // Inițializarea valorilor implicite
             StatusMessage = "Ready to start";
+
+            // Validăm configurația inițială
+            ValidateCardCount();
         }
+
 
         // Metodă pentru a reseta setările jocului
         private void ResetGameSettings()
@@ -439,7 +487,51 @@ namespace MemoryGame.ViewModels
         // Metoda pentru a începe jocul cu configurația selectată
         private void StartGame()
         {
-            StartNewGame();
+            try
+            {
+                // Verificăm configurația
+                if (!IsConfigurationValid())
+                {
+                    MessageBox.Show("Configurația jocului nu este validă. Vă rugăm verificați setările.",
+                                  "Configurație invalidă",
+                                  MessageBoxButton.OK,
+                                  MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Obținem categoria selectată
+                int selectedCategory = 1;
+                if (CategoryTwo) selectedCategory = 2;
+                if (CategoryThree) selectedCategory = 3;
+
+                // Obținem dimensiunile tablei de joc
+                int rows = IsStandardMode ? 4 : CustomRows;
+                int columns = IsStandardMode ? 4 : CustomColumns;
+
+                // Obținem timpul per jucător
+                int timePerPlayer = PlayerTimeSeconds;
+
+                // Creăm view model-ul pentru tabla de joc
+                var gameBoardViewModel = new GameBoardViewModel(CurrentPlayer, selectedCategory, rows, columns, timePerPlayer);
+
+                // Deschidem fereastra jocului
+                var gameBoardView = new GameBoardView(gameBoardViewModel);
+                gameBoardView.Show();
+
+                // Închidem fereastra curentă
+                if (Application.Current.MainWindow is Window currentWindow)
+                {
+                    Application.Current.MainWindow = gameBoardView;
+                    currentWindow.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la începerea jocului: {ex.Message}",
+                              "Eroare",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Error);
+            }
         }
 
         // Metoda pentru a reveni la ecranul de login

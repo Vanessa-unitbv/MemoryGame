@@ -4,15 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:MemoryGame.ViewModels"
+        xmlns:converters="clr-namespace:MemoryGame.Converters"
         mc:Ignorable="d"
         Title="Game Setup" Height="600" Width="650"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="MistyRose">
-
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    </Window.Resources>
+	
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+		<converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+	</Window.Resources>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -104,34 +106,42 @@
                                  Foreground="IndianRed"
                                  Margin="0,5"/>
 
-                    <!-- Custom Game Options -->
-                    <Grid Margin="20,10,0,0" 
-                          IsEnabled="{Binding IsCustomMode}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+					<!-- Custom Game Options -->
+					<Grid Margin="20,10,0,0"
+						  IsEnabled="{Binding IsCustomMode}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
 
-                        <!-- Board Size -->
-                        <TextBlock Grid.Row="0" Grid.Column="0" 
-                                   Text="Board Size (MxN):" 
-                                   Foreground="IndianRed"
-                                   VerticalAlignment="Center" 
-                                   Margin="0,0,10,0"/>
-                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                            <TextBox Text="{Binding CustomRows, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="40" Margin="0,0,5,0"
-                                     BorderBrush="IndianRed"/>
-                            <TextBlock Text="x" Foreground="IndianRed" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <TextBox Text="{Binding CustomColumns, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="40"
-                                     BorderBrush="IndianRed"/>
-                        </StackPanel>
-                    </Grid>
+						<!-- Board Size -->
+						<TextBlock Grid.Row="0" Grid.Column="0"
+								   Text="Board Size (MxN):"
+								   Foreground="IndianRed"
+								   VerticalAlignment="Center"
+								   Margin="0,0,10,0"/>
+						<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+							<TextBox Text="{Binding CustomRows, UpdateSourceTrigger=PropertyChanged}"
+									 Width="40" Margin="0,0,5,0"
+									 BorderBrush="IndianRed"/>
+							<TextBlock Text="x" Foreground="IndianRed" VerticalAlignment="Center" Margin="0,0,5,0"/>
+							<TextBox Text="{Binding CustomColumns, UpdateSourceTrigger=PropertyChanged}"
+									 Width="40"
+									 BorderBrush="IndianRed"/>
+						</StackPanel>
+
+						<!-- Error Message -->
+						<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                        Text="{Binding CardCountErrorMessage}"
+                        Foreground="Red"
+                        Margin="0,5,0,0"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding IsValidCardCount, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+					    </Grid>
 
                     <!-- Time Selection (applies to both Standard and Custom) -->
                     <Grid Margin="0,20,0,0">
