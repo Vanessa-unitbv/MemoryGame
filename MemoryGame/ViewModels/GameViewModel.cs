@@ -349,35 +349,18 @@ namespace MemoryGame.ViewModels
                     return;
                 }
 
-                // Deschidem dialogul personalizat pentru a alege un joc salvat
-                var openGameDialog = new OpenGameDialog();
+                // Deschidem dialogul personalizat pentru a alege un joc salvat, transmițând utilizatorul curent
+                var openGameDialog = new OpenGameDialog(CurrentPlayer);
 
                 if (openGameDialog.ShowDialog() == true && openGameDialog.SelectedGame != null)
                 {
                     var selectedGame = openGameDialog.SelectedGame;
 
-                    // Încărcăm jocul salvat
+                    // Încărcăm jocul salvat - acum știm sigur că aparține utilizatorului curent
                     var gameBoardViewModel = GameBoardViewModel.LoadGame(selectedGame.FilePath);
 
                     if (gameBoardViewModel != null)
                     {
-                        // Verificăm dacă jocul a fost salvat de același utilizator
-                        if (gameBoardViewModel.CurrentPlayer.Username != CurrentPlayer.Username)
-                        {
-                            var result = MessageBox.Show(
-                                $"Acest joc a fost salvat de utilizatorul '{gameBoardViewModel.CurrentPlayer.Username}', " +
-                                $"dar sunteți conectat ca '{CurrentPlayer.Username}'.\n\n" +
-                                "Doriți să deschideți acest joc oricum?",
-                                "Utilizator diferit",
-                                MessageBoxButton.YesNo,
-                                MessageBoxImage.Question);
-
-                            if (result == MessageBoxResult.No)
-                            {
-                                return;
-                            }
-                        }
-
                         // Deschide fereastra jocului
                         var gameBoardView = new GameBoardView(gameBoardViewModel);
                         gameBoardView.Show();
@@ -399,6 +382,7 @@ namespace MemoryGame.ViewModels
                                 MessageBoxImage.Error);
             }
         }
+
 
         // Metoda pentru a salva jocul curent
         private void SaveGame()

@@ -12,7 +12,7 @@ namespace MemoryGame.ViewModels
     public class OpenGameDialogViewModel : ViewModelBase
     {
         private GameState _selectedGame;
-
+        private User _currentPlayer;
         public ObservableCollection<GameState> SavedGames { get; } = new ObservableCollection<GameState>();
 
         public GameState SelectedGame
@@ -34,8 +34,10 @@ namespace MemoryGame.ViewModels
         public RelayCommand OpenGameCommand { get; }
         public RelayCommand CancelCommand { get; }
 
-        public OpenGameDialogViewModel()
+        public OpenGameDialogViewModel(User currentPlayer)
         {
+            _currentPlayer = currentPlayer ?? throw new ArgumentNullException(nameof(currentPlayer));
+
             DeleteGameCommand = new RelayCommand(DeleteGame, CanExecuteGameCommand);
             OpenGameCommand = new RelayCommand(OpenGame, CanExecuteGameCommand);
             CancelCommand = new RelayCommand(Cancel);
@@ -51,15 +53,7 @@ namespace MemoryGame.ViewModels
         private void LoadSavedGames()
         {
             SavedGames.Clear();
-
-            // Folosim o cale relativă la directorul aplicației
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string saveDir = Path.Combine(baseDir, "SavedGames");
-
-            if (!Directory.Exists(saveDir))
-            {
-                Directory.CreateDirectory(saveDir);
-            }
+            string saveDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SavedGames");
 
             if (Directory.Exists(saveDir))
             {
@@ -77,8 +71,12 @@ namespace MemoryGame.ViewModels
 
                         if (gameState != null && !gameState.IsCompleted)
                         {
-                            gameState.FilePath = file;
-                            SavedGames.Add(gameState);
+                            // Verificăm dacă jocul aparține utilizatorului curent
+                            if (gameState.PlayerName == _currentPlayer.Username)
+                            {
+                                gameState.FilePath = file;
+                                SavedGames.Add(gameState);
+                            }
                         }
                     }
                     catch (Exception)
@@ -99,7 +97,7 @@ namespace MemoryGame.ViewModels
 
             if (SavedGames.Count == 0)
             {
-                MessageBox.Show("Nu există jocuri salvate neterminate.",
+                MessageBox.Show("Nu există jocuri salvate neterminate pentru utilizatorul curent.",
                               "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }

@@ -11,11 +11,11 @@ namespace MemoryGame.Views
 
         public GameState SelectedGame => _viewModel.SelectedGame;
 
-        public OpenGameDialog()
+        public OpenGameDialog(User currentPlayer)
         {
             InitializeComponent();
 
-            _viewModel = new OpenGameDialogViewModel();
+            _viewModel = new OpenGameDialogViewModel(currentPlayer);
             DataContext = _viewModel;
 
             // Abonăm la evenimentul de închidere
@@ -25,6 +25,7 @@ namespace MemoryGame.Views
                 Close();
             };
         }
+
 
         public void RefreshGamesList()
         {
