@@ -13,21 +13,17 @@ namespace MemoryGame.Commands
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
-
         public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-
         public void Execute(object parameter) => _execute(parameter);
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
 
         public event EventHandler CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
-        }
-
-        // Adăugăm această metodă pentru a forța actualizarea stării comenzii
-        public void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

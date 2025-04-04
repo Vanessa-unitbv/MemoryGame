@@ -40,7 +40,6 @@
                Margin="0,5,0,0"/>
         </StackPanel>
 
-        <!-- Content Area -->
         <Grid Grid.Row="1" Margin="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -48,7 +47,6 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- User List -->
             <ListBox Grid.Column="0"
                      ItemsSource="{Binding Users}"
                      SelectedItem="{Binding SelectedUser}"
@@ -57,9 +55,6 @@
                      VerticalAlignment="Top"
                      Background="LavenderBlush"/>
 
-
-
-            <!-- User Image - Border eliminat -->
             <Image Grid.Column="2"
                    Source="{Binding SelectedUser.ImagePath}"
                    Width="150"
@@ -68,7 +63,6 @@
                    Margin="5"/>
         </Grid>
 
-        <!-- Bottom Buttons -->
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
@@ -101,7 +95,6 @@
                     Background="LavenderBlush"/>
         </StackPanel>
 
-        <!-- New User Dialog Popup -->
         <Grid x:Name="NewUserDialog"
               Grid.RowSpan="3"
               Background="#80000000"
@@ -127,7 +120,6 @@
                                Foreground="IndianRed"
                                Margin="0,0,0,15"/>
 
-                    <!-- Username input -->
                     <StackPanel Grid.Row="1" Margin="0,5">
                         <TextBlock Text="Username:" 
                                    Foreground="IndianRed"
@@ -138,7 +130,6 @@
                                  BorderBrush="IndianRed"/>
                     </StackPanel>
 
-                    <!-- User Image selection -->
                     <StackPanel Grid.Row="2" Margin="0,5">
                         <TextBlock Text="User Image:" 
                                    Foreground="IndianRed"

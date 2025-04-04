@@ -15,8 +15,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <!-- Header -->
+		
         <TextBlock Grid.Row="0" 
                    Text="Game Statistics" 
                    FontSize="24" 
@@ -24,7 +23,6 @@
                    Foreground="IndianRed"
                    Margin="0,0,0,20"/>
 
-        <!-- Statistics Table -->
         <ListView Grid.Row="1" 
                   x:Name="UsersStatsList"
                   ItemsSource="{Binding Users}"
@@ -64,7 +62,6 @@
             </ListView.View>
         </ListView>
 
-        <!-- Close Button -->
         <Button Grid.Row="2" 
                 Content="Close" 
                 Width="100" 

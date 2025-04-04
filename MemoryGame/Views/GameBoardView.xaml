@@ -11,22 +11,18 @@
         Background="MistyRose">
 
     <Window.Resources>
-        <!-- Converteri pentru transformări -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         <converters:IsImagePathConverter x:Key="IsImagePathConverter" />
         <converters:BoolToVisibilityMultiConverter x:Key="BoolToVisibilityMultiConverter" />
 
-        <!-- Template pentru cărți -->
         <DataTemplate x:Key="CardTemplate">
             <Button Margin="2" 
                     Command="{Binding DataContext.CardClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                     CommandParameter="{Binding}" 
                     Opacity="{Binding IsMatched, Converter={StaticResource BoolToOpacityConverter}}">
-                <!-- Grid pentru a suprapune fața și spatele cărții -->
                 <Grid Width="80" Height="80">
-                    <!-- Spatele cărții (vizibil când cardul nu este întors) -->
                     <Border Background="LavenderBlush" 
                             BorderBrush="IndianRed"
                             BorderThickness="2"
@@ -38,21 +34,17 @@
                                    VerticalAlignment="Center" />
                     </Border>
 
-                    <!-- Fața cărții (vizibilă când cardul este întors) -->
                     <Border Background="White" 
                             BorderBrush="IndianRed"
                             BorderThickness="2"
                             Visibility="{Binding IsFlipped, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <!-- Verificăm dacă avem o imagine sau valoare numerică -->
                         <Grid>
-                            <!-- Imaginea (afișată dacă există o cale validă) -->
                             <Image Source="{Binding ImagePath}" 
                                    Stretch="Uniform"
                                    Margin="5">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
-                                            <!-- Ascundem imaginea dacă nu este un path valid -->
                                             <DataTrigger Binding="{Binding ImagePath, Converter={StaticResource IsImagePathConverter}}" Value="False">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
@@ -60,8 +52,6 @@
                                     </Style>
                                 </Image.Style>
                             </Image>
-
-                            <!-- Text (afișat pentru valori numerice) -->
                             <TextBlock Text="{Binding Value}"
                                        FontSize="36"
                                        Foreground="IndianRed"
@@ -70,7 +60,6 @@
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <!-- Ascundem textul dacă avem o imagine validă -->
                                             <DataTrigger Binding="{Binding ImagePath, Converter={StaticResource IsImagePathConverter}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
@@ -92,8 +81,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <!-- Bara de meniu -->
         <Menu Grid.Row="0" Background="LavenderBlush">
             <MenuItem Header="File" Foreground="IndianRed">
                 <MenuItem Header="Save Game" Command="{Binding SaveGameCommand}" Foreground="IndianRed" Background="LavenderBlush" />
@@ -101,8 +88,6 @@
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}" Foreground="IndianRed" Background="LavenderBlush" />
             </MenuItem>
         </Menu>
-
-        <!-- Informații joc și timp -->
         <Border Grid.Row="1" 
                 Background="LavenderBlush" 
                 BorderBrush="IndianRed" 
@@ -116,22 +101,16 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <!-- Informații utilizator -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <TextBlock Text="Player: " Foreground="IndianRed" FontWeight="Bold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding CurrentPlayer.Username}" Foreground="IndianRed" VerticalAlignment="Center" Margin="0,0,15,0" />
                 </StackPanel>
-
-                <!-- Timp rămas -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <TextBlock Text="Time: " Foreground="IndianRed" FontWeight="Bold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding TimeDisplay}" Foreground="IndianRed" VerticalAlignment="Center" FontFamily="Consolas" />
                 </StackPanel>
             </Grid>
         </Border>
-
-        <!-- Tabla de joc -->
         <ItemsControl Grid.Row="2" 
                       ItemsSource="{Binding Cards}" 
                       ItemTemplate="{StaticResource CardTemplate}"
@@ -142,8 +121,6 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-
-        <!-- Status bar -->
         <StatusBar Grid.Row="3" Background="LavenderBlush">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusMessage}" Foreground="IndianRed" />

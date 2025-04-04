@@ -6,9 +6,6 @@ using System.Windows.Input;
 
 namespace MemoryGame.Views
 {
-    /// <summary>
-    /// Interaction logic for AboutView.xaml
-    /// </summary>
     public partial class AboutView : Window
     {
         private AboutViewModel _viewModel;
@@ -21,10 +18,6 @@ namespace MemoryGame.Views
             _viewModel.RequestClose += () => Close();
             DataContext = _viewModel;
         }
-
-        /// <summary>
-        /// Handler pentru click pe adresa de email - deschide clientul de email implicit
-        /// </summary>
         private void EmailLink_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             try

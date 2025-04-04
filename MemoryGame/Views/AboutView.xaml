@@ -28,7 +28,6 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<!-- Header -->
 		<TextBlock Grid.Row="0"
                    Text="About Memory Game"
                    FontSize="24"
@@ -36,7 +35,6 @@
                    Foreground="IndianRed"
                    Margin="0,0,0,20"/>
 
-		<!-- Content -->
 		<StackPanel Grid.Row="1" Margin="10,0">
 			<TextBlock Text="Memory Game"
                        FontWeight="Bold"
@@ -81,7 +79,6 @@
 
 		</StackPanel>
 
-		<!-- Close Button -->
 		<Button Grid.Row="2"
                 Content="Close"
                 Width="100"

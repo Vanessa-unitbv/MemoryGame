@@ -12,7 +12,6 @@ namespace MemoryGame.Models
     {
         private string _username;
         private string _imagePath;
-
         public string Username
         {
             get => _username;
@@ -25,7 +24,6 @@ namespace MemoryGame.Models
                 }
             }
         }
-
         public string ImagePath
         {
             get => _imagePath;
@@ -38,12 +36,10 @@ namespace MemoryGame.Models
                 }
             }
         }
-
         public int GamesPlayed { get; set; }
         public int GamesWon { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
