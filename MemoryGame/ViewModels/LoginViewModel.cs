@@ -121,7 +121,7 @@ namespace MemoryGame.ViewModels
                 Directory.CreateDirectory(avatarsDir);
             }
 
-            // Cautăm toate fișierele de imagini din director
+            // Căutăm toate fișierele de imagini din director
             string[] avatarFiles = Directory.GetFiles(avatarsDir, "*.jpg")
                                   .Concat(Directory.GetFiles(avatarsDir, "*.png"))
                                   .Concat(Directory.GetFiles(avatarsDir, "*.gif"))
@@ -171,7 +171,7 @@ namespace MemoryGame.ViewModels
                 var newUser = new User
                 {
                     Username = NewUsername,
-                    ImagePath = SelectedImagePath,  // Salvăm calea către imaginea selectată
+                    ImagePath = SelectedImagePath,  // Păstrăm calea selectată - UserService va converti la relativă la salvare
                     GamesPlayed = 0,
                     GamesWon = 0
                 };
