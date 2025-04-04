@@ -17,7 +17,7 @@ using Microsoft.Win32;
 
 namespace MemoryGame.ViewModels
 {
-    public class GameBoardViewModel : INotifyPropertyChanged
+    public class GameBoardViewModel : ViewModelBase
     {
         #region Fields
 
@@ -716,17 +716,6 @@ namespace MemoryGame.ViewModels
                 currentWindow.Close();
             }
         }
-        #endregion
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         #endregion
     }
 }

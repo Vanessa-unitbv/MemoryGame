@@ -12,7 +12,7 @@ using MemoryGame.Views;
 
 namespace MemoryGame.ViewModels
 {
-    public class GameViewModel : INotifyPropertyChanged
+    public class GameViewModel : ViewModelBase
     {
         // Proprietăți pentru utilizator și joc
         private User _currentPlayer;
@@ -551,12 +551,6 @@ namespace MemoryGame.ViewModels
             }
         }
 
-        // Implementare INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+       
     }
 }

@@ -17,7 +17,7 @@ namespace MemoryGame.ViewModels
     /// <summary>
     /// ViewModel pentru fereastra de autentificare
     /// </summary>
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : ViewModelBase
     {
         private readonly UserService _userService;
         private User _selectedUser;
@@ -307,13 +307,6 @@ namespace MemoryGame.ViewModels
                 MessageBox.Show($"Eroare la pornirea jocului: {ex.Message}", "Eroare",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void CloseNewUserDialog()
